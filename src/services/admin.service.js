@@ -79,6 +79,41 @@ async function listAllPosts({ page = 1, limit = 20, search, status } = {}) {
     pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
   };
 }
+
+async function getById(id) {
+  const post = await Post.findOne({ _id
+: id, isDeleted: false }).populate("author", "name email");
+  if (!post) throw new HttpError(404, "Post not found");
+  return post;
+}
+
+async function setPostStatus(id, status) {
+  let isDeleted = false;
+
+ if(status !== "published"){
+   isDeleted = true;
+
+ }  
+
+  const post = await Post.findOneAndUpdate(
+    { _id: id},
+    { status, isDeleted: isDeleted },
+    { new: true, runValidators: true },
+  ).populate("author", "name email");
+  if (!post) throw new HttpError(404, "Post not found");
+  return post;
+}   
+
+async function updatePost(id, data) {
+  const post = await Post.findOneAndUpdate(
+    { _id: id},
+    { ...data , isDeleted: false },
+    { new: true, runValidators: true },
+  ).populate("author", "name email");
+  if (!post) throw new HttpError(404, "Post not found");
+  return post;
+}
+
 async function deletePost(id) {
   const post = await Post.findOneAndDelete({_id: id});
   if (!post) throw new HttpError(404, "Post not found");
@@ -91,5 +126,8 @@ module.exports = {
   changeRole,
   softDeleteUser,
   listAllPosts,
+  getById,
+  setPostStatus,
+  updatePost,
   deletePost,
 };

@@ -19,6 +19,8 @@ router.patch(
 );
 router.delete("/users/:id", c.deleteUser);
 router.get("/posts", c.posts);
+router.get("/posts/:id", c.getPost);
+router.put("/posts/:id", c.updatePost);
 router.patch(
   "/posts/:id/status",
   validate(

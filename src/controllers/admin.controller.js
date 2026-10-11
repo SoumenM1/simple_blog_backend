@@ -1,5 +1,4 @@
 const admin = require("../services/admin.service");
-const posts = require("../services/post.service");
 const comments = require("../services/comment.service");
 const asyncHandler = require("../utils/asyncHandler");
 const Post = require("../models/Post");
@@ -28,18 +27,35 @@ exports.posts = asyncHandler(async (req, res) =>
   res.json({ success: true, data: await admin.listAllPosts(req.query) }),
 );
 
-exports.setPostStatus = asyncHandler(async (req, res) => {
-  const post = await Post.findOneAndUpdate(
-    { _id: req.params.id, isDeleted: false },
-    { status: req.body.status },
-    { new: true, runValidators: true },
-  ).populate("author", "name email");
+exports.getPost = asyncHandler(async (req, res) => {
+  const post = await admin.getById(req.params.id);
   if (!post)
     return res
       .status(404)
       .json({ success: false, error: { message: "Post not found" } });
   res.json({ success: true, data: { post } });
 });
+
+exports.updatePost = asyncHandler(async (req, res) => {
+  const post = await admin.updatePost(req.params.id, req.body);
+  console.log("Updated Post:", req.params.id, req.body);
+  if (!post)
+    return res
+      .status(404)
+      .json({ success: false, error: { message: "Post not found" } });
+  res.json({ success: true, data: { post } });
+  
+});
+
+exports.setPostStatus = asyncHandler(async (req, res) => {
+  const post = await admin.setPostStatus(req.params.id, req.body.status);
+  if (!post)
+    return res
+      .status(404)
+      .json({ success: false, error: { message: "Post not found" } });
+  res.json({ success: true, data: { post } });
+});
+
 exports.deletePost = asyncHandler(async (req, res) => {
   await admin.deletePost(req.params.id);
   res.json({ success: true, message: "Post moved to trash" });
