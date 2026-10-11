@@ -38,7 +38,7 @@ exports.getPost = asyncHandler(async (req, res) => {
 
 exports.updatePost = asyncHandler(async (req, res) => {
   const post = await admin.updatePost(req.params.id, req.body);
-  console.log("Updated Post:", req.params.id, req.body);
+  
   if (!post)
     return res
       .status(404)
