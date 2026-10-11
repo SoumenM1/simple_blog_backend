@@ -44,7 +44,6 @@ exports.updatePost = asyncHandler(async (req, res) => {
       .status(404)
       .json({ success: false, error: { message: "Post not found" } });
   res.json({ success: true, data: { post } });
-  
 });
 
 exports.setPostStatus = asyncHandler(async (req, res) => {

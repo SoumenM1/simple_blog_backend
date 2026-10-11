@@ -15,7 +15,6 @@ exports.get = asyncHandler(async (req, res) =>
 exports.create = asyncHandler(async (req, res) => {
   req.activityAction = "post.create";
   req.activityResourceType = "post";
-  console.log("req.body in post.controller.js create:", req.body);
   const post = await service.create(req.body, req.user);
   req.activityResourceId = post._id.toString();
   res.status(201).json({ success: true, data: { post } });

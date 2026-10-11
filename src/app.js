@@ -33,6 +33,7 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
   message: {
     success: false,
+    satus: 429,
     error: { message: "Too many authentication requests. Try again later." },
   },
 });
@@ -40,8 +41,8 @@ const authLimiter = rateLimit({
 app.get("/api/v1/health", (_req, res) =>
   res.json({ success: true, data: { status: "ok", service: "inkline-api" } }),
 );
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/posts", postRoutes);
+app.use("/api/v1/auth", authLimiter, authRoutes);
+app.use("/api/v1/posts", authLimiter, postRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
